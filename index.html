@@ -55,7 +55,19 @@
       button.button.is-success {
         background-color: #264f18;
       }
+
+      .success-message {
+        display: none;
+      }
+      .form-submitted .success-message {
+        margin-top: 4rem;
+        display: block;
+      }
+      .form-submitted .rsvp-form {
+        display: none;
+      }
     </style>
+
     <!--[if IE]>
       <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -106,7 +118,7 @@
       <li></li>
       <li></li>
     </ul>
-    <section class="section main-content">
+    <section class="section main-content" id="main-content">
       <div class="container">
         <h1 class="title has-text-centered">You're Invited!</h1>
 
@@ -119,37 +131,38 @@
         <div class="body-para is-size-4">
           If you're able to join us, <b>please fill out the form below</b> as
           soon as possible, so we can plan accordingly. If you'd like to invite
-          someone to come with you, send them a link to this form as well. See
-          you soon!
+          someone to come along, send them a link to this form as well. Happy
+          Holidays!
         </div>
         <div class="body-para is-size-4">— Arjun & Vishnu</div>
-        <form class="rsvp-form">
+        <form class="rsvp-form" id="rsvp-form">
           <div class="field">
             <label class="label">Name</label>
             <div class="control">
-              <input class="input" type="text" />
+              <input class="input" type="text" name="name" required />
             </div>
           </div>
           <div class="field">
             <label class="label">Favorite Christmas Song</label>
             <div class="control">
-              <input class="input" type="text" />
+              <input class="input" type="text" name="song" required />
             </div>
           </div>
           <div class="field">
             <label class="label">Any additional notes?</label>
             <div class="control">
-              <input class="input" type="text" />
+              <input class="input" type="text" name="notes" />
             </div>
           </div>
           <div class="field">
             <div class="control">
-              <button class="button is-success is-large is-fullwidth">
+              <button id="submit-button" class="button is-success is-large is-fullwidth" id=>
                 I'll be there!
               </button>
             </div>
           </div>
         </form>
+        <h1 class="title has-text-centered success-message">See You Soon!</h1>
       </div>
     </section>
     <section class="section has-text-centered map-container">
@@ -160,5 +173,27 @@
         allowfullscreen=""
       ></iframe>
     </section>
+    <script type="text/javascript">
+      document.getElementById("rsvp-form").addEventListener("submit", e => {
+        e.preventDefault();
+        document.getElementById("submit-button").disabled = true;
+        
+        let formData = new FormData(e.target);
+        queryParams = [...formData.entries()].map(
+          e => encodeURIComponent(e[0]) + "=" + encodeURIComponent(e[1])
+        );
+        fetch(
+          "https://script.google.com/macros/s/AKfycbw17Oe1sOkQ1URqZ37wSyp3Fgg8HqVgW8V2QZaz3P_VVi1nSQc/exec?" +
+            queryParams.join("&"),
+          {
+            method: "GET"
+          }
+        ).then(() => {
+          document
+            .getElementById("main-content")
+            .classList.add("form-submitted");
+        });
+      });
+    </script>
   </body>
 </html>
